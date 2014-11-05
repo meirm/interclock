@@ -1,0 +1,4 @@
+#!/bin/bash
+
+INTERCLOCKCTL=/usr/local/bin/interclock-ctl.sh
+INTERCLOCKBASE=/net/pi/mnt/shared/interclock/

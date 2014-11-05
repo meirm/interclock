@@ -1,0 +1,144 @@
+#!/usr/bin/perl
+use strict;
+use warnings;
+my $progname="interclock";
+my $version="14.11.05.1";
+my $ip="127.0.0.1\n";
+$ip=`/usr/local/bin/myip` if (-f "/usr/local/bin/myip" );
+my $USER=$ENV{'USER'};
+my $punchpath=`grep INTERCLOCKBASE= /etc/interclock/config`;
+chomp $punchpath;
+$punchpath=~ s/.*=//;
+my $allowfile="$punchpath/$USER/allow/ance.txt";
+my $punchcard="$punchpath/$USER/punch/card.txt";
+my $historydir="$punchpath/$USER/history";
+my  ($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst) = localtime(time);
+$year+=1900;
+$mon++;
+$mday="0$mday" if $mday < 10;
+$mon="0$mon" if $mon < 10;
+my $today="$year$mon$mday";
+my $allowance=0;
+my $timeleft=0;
+my $minused=0;
+&banner();
+&usage() unless @ARGV == 1;
+
+my $request=shift @ARGV;
+if ($request eq "status"){
+	&reqstatus();
+}elsif($request eq "in"){
+	&reqclockin();
+}elsif($request eq "out"){
+	&reqclockout();
+}else{
+	if ( $USER eq "root" ){
+		if ($request eq "cron"){
+		        &cronaction();
+		}else{
+			&usage();
+		}
+	}else{
+	&usage();
+	}
+}
+# We should never get here
+exit (1);
+
+########################
+# Supporing Functions
+sub cronaction{
+	#pending
+}
+
+sub success{
+	print "Success\n";
+}
+
+sub fail{
+	print "Failed\n";
+}
+
+sub reqclockout{
+	&showusage();
+	if ( -f "$punchcard" ){
+		unlink "$punchcard";
+		print "##### clocked out #####\n";
+		print "I hope you enjoyed the net\n";
+		&success();
+	}else{
+		print "#### You were not logged in ####\n";
+		print "To clock in run command:\n";
+		print "$progname in\n";
+		&fail();
+	}
+}
+
+sub reqclockin{
+	&showusage();
+	if ($allowance > 0 ){
+		unless( -f "$punchcard" ){
+			&touchip("$punchcard");
+			print "You haved clocked in.\n";
+			print "##### Remember to clock out #####\n";
+			print "To clock out run command:\n";
+			print "$progname out\n";
+			&success();
+		}else{
+			print "You were already clocked in.\n";
+			print "Remember to clock out on end of session.\n";
+			&success();
+		}
+	}else{
+		print "You have no credit left\n";
+		&fail();
+	}
+}
+
+sub touchip{
+	my ($tf)=@_;
+	unless (-f $tf){
+		open(F,">$tf")||die("Could not create file $tf\n");
+		print F "$ip";
+		close(F);
+	}
+}
+
+sub balance{
+	open(FA,"$allowfile") || die("Error opening allowance card for user $USER\n");
+	$allowance=<FA>;
+	close(FA);
+	chomp $allowance;
+	$minused=`ls $historydir/ | grep $today 2>/dev/null | wc -l `;
+	$timeleft= $allowance - $minused;
+}
+
+sub reqstatus{
+	&showusage();
+	if ( -f "$punchcard" ){
+		print "User $USER is corrently clocked in\n";
+	}else{
+		print "User $USER has clocked out\n";
+	}
+	
+}
+
+sub showusage{
+	die("No allowance card for user $USER\n") unless -f "$allowfile";
+	&balance;
+	print "User $USER allowance is $allowance min" . ($allowance>1?'s':'') . "\n";
+	print "Time left $timeleft min" . ($timeleft >1?'s':'') . "\n";
+}
+sub banner{
+	print "\n$progname $version - Daily internet allowance\n";
+	print "\tby Meir Michanie - meirm\@riunx.com\n\n";
+}
+sub usage{
+	print "Usage:\n";
+	print "$progname [in|out|status|help]\n";
+	print "$progname in\t starts a surfing session\n";
+	print "$progname out\t stops a surfing session\n";
+	print "$progname status\t reports allowance and current status\n";
+	print "\n\n";
+	exit(0);
+}
