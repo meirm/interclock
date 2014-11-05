@@ -22,18 +22,22 @@ Installation
 1. Create shared filesystem
 
 On the central machine create a shared directory (I use NFS) 
-mkdir -p /export/interclock/{kid1,kid2}/{punch,allow,history}
+
+	mkdir -p /export/interclock/{kid1,kid2}/{punch,allow,history}
 
 Give ownership to the kids to their respective 'punch' directory.
 The other directories should be owned by root but with read access to the kids.
 
 2. Setup cron job for user root on central server to reset allowances.
 i.e.
+
 	0 8 * * * echo 120 > /export/interclock/kid1/allow/ance.txt
+
 	0 8 * * * echo 90 > /export/interclock/kid2/allow/ance.txt
 
 3. Setup cron job to clean old records.
 i.e.
+
 	0 1 * * * find /export/interclock/kid{1,2} -type f -mtime +1 -exec rm {} \;
 
 4. Copy the files under bin to all computers under /usr/local/bin/
@@ -48,6 +52,7 @@ So now I have an iptables rule to allow the root user and my user id to go beyon
 
 7. Setup cron job for user root on each workstation to run every minute. This cron is the responsible for opening/closing the gates to the internet.
 i.e.
+
 	* * * * * /usr/local/bin/interclock-cron.sh 
 
 Monitoring
