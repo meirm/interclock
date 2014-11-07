@@ -18,11 +18,11 @@ for INTERCLOCKUSERNAME in `cat /etc/interclock/users`; do
 	blockcount=`$INTERCLOCKCTL status $INTERCLOCKUSERNAME| tail -1`
 	if [ $minused -ge $allowance ]; then 
 		# make sure user is blocked
-		if [ $blockcount == 0  ] ; then 
+		if [ $blockcount -gt 0  ] ; then 
 			$INTERCLOCKCTL  deny $INTERCLOCKUSERNAME
 		fi
 		if [ -f $INTERCLOCKBASE/$INTERCLOCKUSERNAME/punch/card.txt ] ; then
-			rm -f $INTERCLOCKBASE/$INTERCLOCKUSERNAME/punch/card.txt  ;
+			su -c "rm -f $INTERCLOCKBASE/$INTERCLOCKUSERNAME/punch/card.txt" $INTERCLOCKUSERNAME ;
 		fi
 	else
 		if [ -f $INTERCLOCKBASE/$INTERCLOCKUSERNAME/punch/card.txt ] ; then 
@@ -31,7 +31,7 @@ for INTERCLOCKUSERNAME in `cat /etc/interclock/users`; do
 				$INTERCLOCKCTL  allow $INTERCLOCKUSERNAME
 			fi
 		else
-			if [ $blockcount != 0  ] ; then
+			if [ $blockcount -gt 0  ] ; then
 				$INTERCLOCKCTL  deny $INTERCLOCKUSERNAME
 			fi
 		fi
