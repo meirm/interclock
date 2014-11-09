@@ -1,0 +1,17 @@
+#!/bin/bash
+
+. /etc/interclock/config
+
+
+for KIOSKUSERNAME in `cat /etc/interclock/users`; do
+                if [ -f $KIOSKBASE/$KIOSKUSERNAME/punch/card.txt ] ; then
+                        USAGE=`print_usage $KIOSKUSERNAME` #`ls $KIOSKBASE/$KIOSKUSERNAME/history/ | wc -l`
+                        ALLOWANCE=`print_allowance $KIOSKUSERNAME` #`cat $KIOSKBASE/$KIOSKUSERNAME/allow/ance.txt`
+                        if [ $USAGE -ge $ALLOWANCE ]; then
+                                rm $KIOSKBASE/$KIOSKUSERNAME/punch/card.txt
+                        else
+                                touch $KIOSKBASE/$KIOSKUSERNAME/history/$TODAY-$HMSTIME.txt
+                        fi
+                fi
+done
+
