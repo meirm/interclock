@@ -1,0 +1,17 @@
+#!/bin/bash 
+
+
+. /etc/interclock/config
+
+
+for INTERCLOCKUSERNAME in `cat /etc/interclock/users`; do
+                if [ -f $INTERCLOCKBASE/$INTERCLOCKUSERNAME/punch/card.txt ] ; then
+                        USAGE=`print_usage $INTERCLOCKUSERNAME` #`ls $INTERCLOCKBASE/$INTERCLOCKUSERNAME/history/ | wc -l`
+                        ALLOWANCE=`print_allowance $INTERCLOCKUSERNAME` #`cat $INTERCLOCKBASE/$INTERCLOCKUSERNAME/allow/ance.txt`
+                        if [ $USAGE -ge $ALLOWANCE ]; then
+                                rm $INTERCLOCKBASE/$INTERCLOCKUSERNAME/punch/card.txt
+                        else
+                                touch $INTERCLOCKBASE/$INTERCLOCKUSERNAME/history/$TODAY-$HMSTIME.txt
+                        fi
+                fi
+done
