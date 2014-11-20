@@ -8,7 +8,6 @@ IPTABLES=/sbin/iptables
 
 TODAY=`date "+%Y%m%d"`
 #commands
-ethX=`/usr/local/bin/iface $ETH`;
 
 function allowuser(){
 	 $IPTABLES -A INTERCLOCK -m owner --uid-owner $1 -j ACCEPT

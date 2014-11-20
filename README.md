@@ -51,9 +51,8 @@ This new version restricts the network access only to the home network address.
 So now I have an iptables rule to allow the root user and my user id to go beyond the router.
 
 7. Setup cron job for user root on each workstation to run every minute. This cron is the responsible for opening/closing the gates to the internet.
-i.e.
-
-	* * * * * /usr/local/bin/interclock-cron.sh 
+	
+	i.e.  * * * * * /usr/local/bin/interclock-cron.sh 
 
 Monitoring
 ----------
