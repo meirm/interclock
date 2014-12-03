@@ -6,8 +6,8 @@
 
 for INTERCLOCKUSERNAME in `cat /etc/interclock/users`; do
                 if [ -f $INTERCLOCKBASE/$INTERCLOCKUSERNAME/punch/card.txt ] ; then
-                        USAGE=`print_usage $INTERCLOCKUSERNAME` #`ls $INTERCLOCKBASE/$INTERCLOCKUSERNAME/history/ | wc -l`
-                        ALLOWANCE=`print_allowance $INTERCLOCKUSERNAME` #`cat $INTERCLOCKBASE/$INTERCLOCKUSERNAME/allow/ance.txt`
+                        USAGE=`print_usage $INTERCLOCKUSERNAME` 
+                        ALLOWANCE=`print_allowance $INTERCLOCKUSERNAME` 
                         if [ $USAGE -ge $ALLOWANCE ]; then
                                 rm $INTERCLOCKBASE/$INTERCLOCKUSERNAME/punch/card.txt
                         else

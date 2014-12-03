@@ -2,3 +2,21 @@
 
 INTERCLOCKCTL=/usr/local/bin/interclock-ctl.sh
 INTERCLOCKBASE=/net/pi/mnt/shared/interclock/
+
+TODAY=`date "+%Y%m%d"`;
+HMSTIME=`date "+%H%M"`;
+if [ ! -f /etc/interclock/users ] ; then
+        echo "you must create a file named /etc/interclock/users with a username per line";
+        exit 1
+fi
+
+print_allowance()
+{
+        cat $INTERCLOCKBASE/$1/allow/ance.txt
+}
+
+print_usage()
+{
+        ls $INTERCLOCKBASE/$1/history/$TODAY-* | wc -l
+}
+
