@@ -8,9 +8,6 @@
 -A OUTPUT -d 192.168.2.0/24 -j ACCEPT
 -A OUTPUT -j INTERNET
 -A OUTPUT -j INTERCLOCK
--A OUTPUT -j DROP
--A INTERNET -mowner --uid-owner 1000 -j ACCEPT
--A INTERNET -mowner --uid-owner 0 -j ACCEPT
 
 COMMIT
 # Completed on Thu Sep 26 16:07:39 2013
