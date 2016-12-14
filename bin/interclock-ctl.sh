@@ -10,11 +10,11 @@ TODAY=`date "+%Y%m%d"`
 #commands
 
 function allowuser(){
-	 $IPTABLES -A INTERCLOCK -m owner --uid-owner $1 -j ACCEPT
+	 $IPTABLES -D INTERCLOCK -m owner --uid-owner $1 -j DROP
 }
 
 function blockuser(){
-	$IPTABLES -D INTERCLOCK  -m owner --uid-owner $1 -j ACCEPT
+	$IPTABLES -A INTERCLOCK  -m owner --uid-owner $1 -j DROP
 }
 
 function checkuser(){
