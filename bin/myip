@@ -2,6 +2,6 @@
 
  function int-ip { /sbin/ifconfig $1 | grep "inet addr" | awk -F: '{print $2}' | awk '{print $1}'; }
 
-interface=`/sbin/ifconfig | grep eth| head -1 | awk '{print $1}'`
+interface=`route -n| grep ^0.0.0.0 | sed 's/.*\s//'`
 int-ip $interface
 
